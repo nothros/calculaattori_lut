@@ -20,38 +20,65 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
+  
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //TÄMÄ RAKENTAA UUDEN BUTTONIN NÄYTTÖÖN CONTAINER EI EHKÄ VÄLTTÄMÄTÖN?
-  //CONTAINERIIN SAA MARGINIT
+  //Näitä tarvii näyttö
+  String output = "0";
+  String _output = "";
+
+
+  //Buttoneiden logiikka.
+  buttonPressed(String buttonText){
+    _output += buttonText;
+    setState(() {
+      output = _output;
+    });
+  }
+
+  //Ruutukokofunkkarit, näitä käyttää numeronäyttö, toistaiseksi näin
+  Size screenSize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
+
+  double screenWidth(BuildContext context, {double dividedBy = 1}) {
+    return screenSize(context).width / dividedBy;
+  }
+
+  double screenHeight(BuildContext context, {double dividedBy = 1}) {
+    return screenSize(context).height / dividedBy;
+  }
+  //Funkkarit loppuu
+
+  //Numerobuttonit
   Widget buildButton(String buttonText) {
     return Expanded(
         child: Container(
       margin: const EdgeInsets.all(10.0),
       child: ElevatedButton(
         child: Text(buttonText),
-        onPressed: () {},
+        onPressed: () => buttonPressed(buttonText),
         style: ElevatedButton.styleFrom(
-            fixedSize: const Size(60, 60),
+            fixedSize: const Size(80, 80),
             shape: const CircleBorder(),
             textStyle:
-                const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, fontFamily: "VT323",)),
       ),
     ));
   }
 
-  //TÄMÄ RAKENTAA UUDEN OPERANDBUTTONIN NÄYTTÖÖN CONTAINER EI EHKÄ VÄLTTÄMÄTÖN?
-  //KATOAAKO VÄRI JOS CONTAINERIN JÄTTÄÄ POIS?
+  //Operandibuttonit vielä säätöä
   Widget operandButton(String operand) {
     return Expanded(
         child: Container(
       margin: const EdgeInsets.all(10.0),
       color: Colors.orange,
       child: MaterialButton(
-        onPressed: () => {},
+        onPressed: () => buttonPressed(operand),
         child: Text(
           operand,
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -67,18 +94,21 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         body: Column(
-          children: <Widget>[
-            Container(
+            children: [
+              //Numeronäyttö
+              Row(children: [Container(
                 margin: const EdgeInsets.all(10.0),
                 padding: const EdgeInsets.all(10.0),
+                width: screenWidth(context, dividedBy: 4)*3-10, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
+                height: screenHeight(context, dividedBy: 5),//tätä pitää vähän säätää. (1/5 näyttöä korkea)
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.blue)),
                 alignment: Alignment.centerRight,
                 child: Text(
-                  '0',
+                  output,
                   style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
-                )),
-            Column(children: [
+                ))]),
+                //Numeronäyttö loppuu
               Row(children: [
                 buildButton("7"),
                 buildButton("8"),
@@ -104,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 operandButton("="),
               ])
             ])
-          ],
-        ));
+
+        );
   }
 }
