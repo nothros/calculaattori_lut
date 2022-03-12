@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Awesome calculator',
-      theme: new ThemeData(scaffoldBackgroundColor: Colors.blueGrey[700]),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.blueGrey[700]),
       home: const MyHomePage(title: 'Awesome calculator'),
     );
   }
@@ -28,9 +28,52 @@ class _MyHomePageState extends State<MyHomePage> {
   String output = "0";
   String _output = "";
 
+  String currentNumber = ""; //pitää kirjaa nykyisestä luvusta
+  List<double> givenNumbers = []; //luvut listana
+  num sum = 0;
+
   //Buttoneiden logiikka.
-  buttonPressed(String buttonText){
-    _output += buttonText;
+  buttonPressed(String buttonText) {
+    if (_output == "Not a number") {
+      _output = "";
+    }
+    if (buttonText == "C") {
+      output = "0";
+      _output = "0";
+      givenNumbers = [];
+      currentNumber = "";
+    } else if (buttonText == "+") {
+      if (currentNumber != "") {
+        givenNumbers.add(double.parse(currentNumber));
+      }
+      _output += buttonText;
+      currentNumber = "";
+    } else if (buttonText == "-") {
+      if (currentNumber != "") {
+        givenNumbers.add(double.parse(currentNumber));
+      }
+      _output += buttonText;
+      currentNumber = "-";
+    } else if (buttonText == "=") {
+      givenNumbers.add(double.parse(currentNumber));
+      for (var givenNumber in givenNumbers) {
+        sum += givenNumber;
+      }
+      _output = sum.toString();
+      givenNumbers = [];
+      currentNumber = "";
+    } else if (buttonText == ".") {
+      if (currentNumber.contains(".")) {
+        _output = "Not a number";
+        currentNumber = "";
+      } else {
+        _output += buttonText;
+        currentNumber += buttonText;
+      }
+    } else {
+      _output += buttonText;
+      currentNumber += buttonText;
+    }
     setState(() {
       output = _output;
     });
@@ -53,97 +96,95 @@ class _MyHomePageState extends State<MyHomePage> {
   //Näyttö
   Widget buildTextArea() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 22.0),
+        margin: const EdgeInsets.symmetric(horizontal: 22.0),
         //        padding: const EdgeInsets.all(10.0),
-      width: screenWidth(context, dividedBy: 4)*3 -44, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
-      height: 120,//tätä pitää vähän säätää. (1/5 näyttöä korkea)
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: Colors.lightGreen[600],
-      ),
-      alignment: Alignment.centerRight,
-      child: Text(
-        output,
-        style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
-      ));
+        width: screenWidth(context, dividedBy: 4) * 3 -
+            44, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
+        height: 120, //tätä pitää vähän säätää. (1/5 näyttöä korkea)
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: Colors.lightGreen[600],
+        ),
+        alignment: Alignment.centerRight,
+        child: Text(
+          output,
+          style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
+        ));
   }
+
   //Numerobuttonit
   Widget buildButton(String buttonText) {
-    if (buttonText == "C"){
+    if (buttonText == "C") {
       return Expanded(
+          child: Container(
+        child: ElevatedButton(
+          child: Text(buttonText),
+          onPressed: () => buttonPressed(buttonText),
+          style: ElevatedButton.styleFrom(
+              primary: Colors.orange[800],
+              minimumSize: const Size(90, 90),
+              shape: const CircleBorder(),
+              textStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+      ));
+    }
+    return Expanded(
         child: Container(
       child: ElevatedButton(
         child: Text(buttonText),
         onPressed: () => buttonPressed(buttonText),
         style: ElevatedButton.styleFrom(
-          primary: Colors.orange[800],
-           minimumSize: const Size(90, 90),
+            primary: Colors.blueGrey[900],
+            minimumSize: const Size(90, 90),
             shape: const CircleBorder(),
-            textStyle:
-                const TextStyle(
-                  color: Colors.white, 
-                  fontSize: 30, 
-                  fontWeight: FontWeight.bold,
-                )),
+            textStyle: const TextStyle(
+              color: Color.fromARGB(255, 255, 224, 178),
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            )),
       ),
     ));
-    }
-    return Expanded(
-      child: Container(
-        child: ElevatedButton(
-          child: Text(buttonText),
-            onPressed: () => buttonPressed(buttonText),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blueGrey[900],
-              minimumSize: const Size(90, 90),
-              shape: const CircleBorder(),
-              textStyle:
-                const TextStyle(color: Color.fromARGB(255, 255, 224, 178), 
-                fontSize: 30, 
-                fontWeight: FontWeight.bold,
-              )
-            ),
-        ),
-      )
-    );
   }
 
   //Operandibuttonit vielä säätöä
   Widget operandButton(String operand) {
-    if (operand == "="){
+    if (operand == "=") {
       return Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Colors.orange[700],
-          ),
-          margin: const EdgeInsets.all(10.0),
-          child: MaterialButton(
-            height: 50,
-            onPressed: () => buttonPressed(operand),
-            child: Text(
-              operand,
-              style: new TextStyle(fontSize: 30, 
-              fontWeight: FontWeight.bold, 
-              color: Colors.white),
-            ),
-          ),
-        ));
-    }
-    
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.all(10.0),
+          child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Colors.orange[200],
+          color: Colors.orange[700],
         ),
+        margin: const EdgeInsets.all(10.0),
+        child: MaterialButton(
+          height: 50,
+          onPressed: () => buttonPressed(operand),
+          child: Text(
+            operand,
+            style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
+      ));
+    }
+
+    return Expanded(
+        child: Container(
+      margin: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: Colors.orange[200],
+      ),
       child: MaterialButton(
         height: 50,
         onPressed: () => buttonPressed(operand),
         child: Text(
           operand,
-          style: new TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
       ),
     ));
@@ -151,43 +192,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(     
+    return Scaffold(
         body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              //Numeronäyttö
-              Row(children: [
-                buildTextArea(),
-              ]),
-                //Numeronäyttö loppuu
-              Row(children: [
-                buildButton("7"),
-                buildButton("8"),
-                buildButton("9"),
-                operandButton("-"),
-              ]),
-              Row(children: [
-                buildButton("4"),
-                buildButton("5"),
-                buildButton("6"),
-                operandButton("+"),
-              ]),
-              Row(children: [
-                buildButton("1"),
-                buildButton("2"),
-                buildButton("3"),
-                const Expanded(child: Text('')), //PITÄÄ RIVIT SAMANLEVYISINÄ
-              ]),
-              Row(children: [
-                buildButton("C"),
-                buildButton("0"),
-                buildButton("."),
-                operandButton("="),
-              ])
-            ])
-          )
-        );
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //Numeronäyttö
+                  Row(children: [
+                    buildTextArea(),
+                  ]),
+                  //Numeronäyttö loppuu
+                  Row(children: [
+                    buildButton("7"),
+                    buildButton("8"),
+                    buildButton("9"),
+                    operandButton("-"),
+                  ]),
+                  Row(children: [
+                    buildButton("4"),
+                    buildButton("5"),
+                    buildButton("6"),
+                    operandButton("+"),
+                  ]),
+                  Row(children: [
+                    buildButton("1"),
+                    buildButton("2"),
+                    buildButton("3"),
+                    const Expanded(
+                        child: Text('')), //Dummy, pitää rivit samanleveyisinä
+                  ]),
+                  Row(children: [
+                    buildButton("C"),
+                    buildButton("0"),
+                    buildButton("."),
+                    operandButton("="),
+                  ])
+                ])));
   }
 }
