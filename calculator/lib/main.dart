@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => buttonPressed(buttonText),
         style: ElevatedButton.styleFrom(
           primary: Colors.orange[800],
-           minimumSize: const Size(80, 80),
+           minimumSize: const Size(90, 90),
             shape: const CircleBorder(),
             textStyle:
                 const TextStyle(
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => buttonPressed(buttonText),
             style: ElevatedButton.styleFrom(
               primary: Colors.blueGrey[900],
-              minimumSize: const Size(80, 80),
+              minimumSize: const Size(90, 90),
               shape: const CircleBorder(),
               textStyle:
                 const TextStyle(color: Color.fromARGB(255, 255, 224, 178), 
