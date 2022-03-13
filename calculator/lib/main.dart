@@ -26,11 +26,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //Näitä tarvii näyttö
   String output = "0";
-  String _output = "";
+  String _output = "0";
   String lastOutput = "0";
-  String currentNumber = "0"; //pitää kirjaa nykyisestä luvusta
-  List<double> givenNumbers = []; //luvut listana
-  num sum = 0;
 
 
   removeLastLetter(){
@@ -88,9 +85,19 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     else if(buttonText == "."){
+      if(lastOutput != "."){
+      if(_output.contains("+")||_output.contains("-")){
+      String apu=_output.replaceAll("-", "+-");
+      var array = apu.split("+");
+      String currentNumber = array.last;
+
       if(!currentNumber.contains(".")){
-      currentNumber+=buttonText;
       _output+=buttonText;
+      }
+      }
+      else if(!_output.contains(".")){
+        _output+=buttonText;
+      }
       }
     }
 
@@ -123,48 +130,47 @@ class _MyHomePageState extends State<MyHomePage> {
   //Näyttö
   Widget buildTextArea() {
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 22.0),
-        //        padding: const EdgeInsets.all(10.0),
-        width: screenWidth(context, dividedBy: 4) * 3 -
-            44, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
-        height: 120, //tätä pitää vähän säätää. (1/5 näyttöä korkea)
-        decoration: 
+      margin: const EdgeInsets.symmetric(horizontal: 22.0),
+      //        padding: const EdgeInsets.all(10.0),
+      width: screenWidth(context, dividedBy: 4) * 3 - 44, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
+      height: 120, //tätä pitää vähän säätää. (1/5 näyttöä korkea)
+      decoration: 
         BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           color: Colors.lightGreen[600],
-          boxShadow: [BoxShadow(color: Color.fromARGB(255, 85, 139, 47), offset: Offset(4.0, 4.0), blurRadius: 15, spreadRadius: 20,)]
+          boxShadow: const [BoxShadow(color: Color.fromARGB(255, 85, 139, 47), offset: Offset(4.0, 4.0), blurRadius: 15, spreadRadius: 20,)]
         ),
         alignment: Alignment.bottomRight,
         child: FittedBox(
           child: Text(
             output,
-            style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
         )));
   }
 
   //Numerobuttonit
-  Widget buildButton(String buttonText) {
+  Widget buildButton(String buttonText ) {
     if (buttonText == "C") {
       return Expanded(
-          child: Container(
         child: ElevatedButton(
           child: Text(buttonText),
           onPressed: () => buttonPressed(buttonText),
           style: ElevatedButton.styleFrom(
-              primary: Colors.orange[800],
-              minimumSize: const Size(90, 90),
-              shape: const CircleBorder(),
-              textStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 30,
+            primary: Colors.orange[800],
+            minimumSize: const Size(90, 90),
+            shape: const CircleBorder(),
+            textStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 30,
                 fontWeight: FontWeight.bold,
               )),
         ),
-      ));
+      );
     }
     return Expanded(
-        child: Container(
+      
       child: ElevatedButton(
+        
         child: Text(buttonText),
         onPressed: () => buttonPressed(buttonText),
         style: ElevatedButton.styleFrom(
@@ -177,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
               fontWeight: FontWeight.bold,
             )),
       ),
-    ));
+    );
   }
 
   //Operandibuttonit vielä säätöä
@@ -186,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return Expanded(
           child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           color: Colors.orange[700],
         ),
         margin: const EdgeInsets.all(10.0),
@@ -195,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () => buttonPressed(operand),
           child: Text(
             operand,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
@@ -206,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Container(
       margin: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
         color: Colors.orange[200],
       ),
       child: MaterialButton(
@@ -214,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => buttonPressed(operand),
         child: Text(
           operand,
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
       ),
     ));
@@ -250,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     buildButton("2"),
                     buildButton("3"),
                     const Expanded(
-                        child: Text('')), //Dummy, pitää rivit samanleveyisinä
+                      child: Text('')), //Dummy, pitää rivit samanleveyisinä
                   ]),
                   Row(children: [
                     buildButton("C"),
