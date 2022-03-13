@@ -42,11 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
   //Buttonlogiikka
   buttonPressed(String buttonText) {
 
-    if(buttonText == "C"){
-      removeLastLetter();
-      if(_output.isEmpty){
-        _output = "0";
-      }
+    if(buttonText == "AC"){
+      _output = "";
+      _output = "0";
+      
     }
     else if (buttonText == "=") {
       String numbers = "";
@@ -131,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildTextArea() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 22.0),
-      //        padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       width: screenWidth(context, dividedBy: 4) * 3 - 44, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
       height: 120, //tätä pitää vähän säätää. (1/5 näyttöä korkea)
       decoration: 
@@ -150,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Numerobuttonit
   Widget buildButton(String buttonText ) {
-    if (buttonText == "C") {
+    if (buttonText == "AC") {
       return Expanded(
         child: ElevatedButton(
           child: Text(buttonText),
@@ -259,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text('')), //Dummy, pitää rivit samanleveyisinä
                   ]),
                   Row(children: [
-                    buildButton("C"),
+                    buildButton("AC"),
                     buildButton("0"),
                     buildButton("."),
                     operandButton("="),
