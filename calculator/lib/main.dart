@@ -27,53 +27,80 @@ class _MyHomePageState extends State<MyHomePage> {
   //Näitä tarvii näyttö
   String output = "0";
   String _output = "";
-
-  String currentNumber = ""; //pitää kirjaa nykyisestä luvusta
+  String lastOutput = "0";
+  String currentNumber = "0"; //pitää kirjaa nykyisestä luvusta
   List<double> givenNumbers = []; //luvut listana
   num sum = 0;
 
-  //Buttoneiden logiikka.
+
+  removeLastLetter(){
+     if(_output.length <=1 ){
+        _output = "";
+      }else{
+        String toinen = _output.substring(0, _output.length-1);
+        _output = toinen;
+      }
+  }
+
+  //Buttonlogiikka
   buttonPressed(String buttonText) {
-    if (_output == "Not a number") {
-      _output = "";
+
+    if(buttonText == "C"){
+      removeLastLetter();
+      if(_output.isEmpty){
+        _output = "0";
+      }
     }
-    if (buttonText == "C") {
-      output = "0";
-      _output = "0";
-      givenNumbers = [];
-      currentNumber = "";
-    } else if (buttonText == "+") {
-      if (currentNumber != "") {
-        givenNumbers.add(double.parse(currentNumber));
+    else if (buttonText == "=") {
+      String numbers = "";
+      double summa = 0;
+      if(lastOutput == "-"){
+        removeLastLetter();
       }
-      _output += buttonText;
-      currentNumber = "";
-    } else if (buttonText == "-") {
-      if (currentNumber != "") {
-        givenNumbers.add(double.parse(currentNumber));
+      String apu=_output.replaceAll("-", "+-");
+      var array = apu.split("+").where((s) => s.isNotEmpty).toList();
+      for (var n in array) {
+        summa += double.parse(n);
       }
-      _output += buttonText;
-      currentNumber = "-";
-    } else if (buttonText == "=") {
-      givenNumbers.add(double.parse(currentNumber));
-      for (var givenNumber in givenNumbers) {
-        sum += givenNumber;
-      }
-      _output = sum.toString();
-      givenNumbers = [];
-      currentNumber = "";
-    } else if (buttonText == ".") {
-      if (currentNumber.contains(".")) {
-        _output = "Not a number";
-        currentNumber = "";
-      } else {
+      numbers=summa.toString();
+      _output = numbers;
+      lastOutput="=";
+    }
+
+    else if(buttonText == "+"){
+      if(lastOutput != "+"){
+        if(lastOutput == "-"|| _output == "0"){
+          removeLastLetter();
+        }
+        lastOutput="+";
         _output += buttonText;
-        currentNumber += buttonText;
       }
-    } else {
-      _output += buttonText;
-      currentNumber += buttonText;
     }
+
+    else if(buttonText == "-"){
+      if(lastOutput != "-"){
+        if(lastOutput == "+"|| _output == "0"){
+          removeLastLetter();
+        }
+        lastOutput="-";
+        _output += buttonText;
+      }
+    }
+
+    else if(buttonText == "."){
+      if(!currentNumber.contains(".")){
+      currentNumber+=buttonText;
+      _output+=buttonText;
+      }
+    }
+
+    else{
+      if(_output =="+" ||_output =="0"){
+        _output="";
+      }
+    lastOutput=buttonText;
+    _output+=buttonText;
+     }
     setState(() {
       output = _output;
     });
@@ -101,15 +128,18 @@ class _MyHomePageState extends State<MyHomePage> {
         width: screenWidth(context, dividedBy: 4) * 3 -
             44, //tätä pitää vähän säätää. (luo siis 3/4 näyttöä leveen)
         height: 120, //tätä pitää vähän säätää. (1/5 näyttöä korkea)
-        decoration: BoxDecoration(
+        decoration: 
+        BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           color: Colors.lightGreen[600],
+          boxShadow: [BoxShadow(color: Color.fromARGB(255, 85, 139, 47), offset: Offset(4.0, 4.0), blurRadius: 15, spreadRadius: 20,)]
         ),
-        alignment: Alignment.centerRight,
-        child: Text(
-          output,
-          style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
-        ));
+        alignment: Alignment.bottomRight,
+        child: FittedBox(
+          child: Text(
+            output,
+            style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
+        )));
   }
 
   //Numerobuttonit
